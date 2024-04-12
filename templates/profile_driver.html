@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Include meta tags, title, stylesheets, and Leaflet scripts -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Profile</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        #map {
+            height: calc(100% - 40px); /* Adjust height to leave space for logout button */
+            width: 100%;
+        }
+        .logout-btn {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 10px 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-top-left-radius: 10px;
+        }
+        .driver-profile {
+            padding-bottom: 40px; /* Adjust padding for map height */
+        }
+    </style>
+</head>
+<body>
+    <!-- Your existing HTML code for driver profile -->
+    <div class="driver-profile">
+        <div align="center" class="border">
+            <div class="header">
+                <h1 class="word">Driver Profile</h1>
+            </div>
+            <div class="content">
+                <p>Welcome, {{ session['username'] }}! This is your driver profile page.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Logout button -->
+    <form action="{{ url_for('logout') }}" method="post" class="logout-btn">
+        <input type="submit" value="Logout">
+    </form>
+    <!-- Map container -->
+    <div id="map"></div>
+    <!-- Add Leaflet JavaScript library -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    
+        // Add markers for registered parking spaces
+        {% for parking_space in parking_spaces %}
+            var marker = L.marker([{{ parking_space.latitude }}, {{ parking_space.longitude }}]).addTo(map);
+            marker.bindPopup("<b>{{ parking_space.location }}</b>").openPopup();
+        {% endfor %}
+    </script>
+</body>
+</html>

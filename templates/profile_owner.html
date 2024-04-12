@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Space Owner Profile</title>
+</head>
+<body>
+    <div align="center">
+        <div align="center">
+            <div>
+                <h1>Parking Space Owner Profile</h1>
+            </div>
+            <div>
+                <p>Welcome, {{ session['username'] }}!</p>
+                <h2>Registered Parking Spaces</h2>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Total Slots</th>
+                            <th>Available Free Slots</th>
+                            <th>Address</th>
+                            <th>Action</th> <!-- New column for delete button -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Add table rows dynamically using Jinja2 -->
+                        {% for parking_space in parking_spaces %}
+                        <tr>
+                            <td>{{ parking_space.location }}</td>
+                            <td>{{ parking_space.total_slots }}</td>
+                            <td>{{ parking_space.available_slots }}</td>
+                            <td>{{ parking_space.address }}</td>
+                            <td>
+                                <form action="{{ url_for('delete_parking_space', id=parking_space.id) }}" method="post">
+                                    <input type="submit" value="Delete">
+                                </form>
+                            </td> <!-- New column with delete button -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <button onclick="toggleForm()">Add New Parking Space</button>
+                <br><br>
+                <div id="newParkingSpaceForm" style="display: none;">
+                    <h2>Add New Parking Space</h2>
+                    <form action="{{ url_for('add_parking_space') }}" method="post">
+                        <label for="location">Location:</label><br>
+                        <input type="text" id="location" name="location"><br>
+                        <label for="total_slots">Total Slots:</label><br>
+                        <input type="number" id="total_slots" name="total_slots"><br>
+                        <label for="address">Address:</label><br>
+                        <input type="text" id="address" name="address"><br>
+                        <label for="latitude">Latitude:</label><br>
+                        <input type="text" id="latitude" name="latitude"><br>
+                        <label for="longitude">Longitude:</label><br>
+                        <input type="text" id="longitude" name="longitude"><br><br>
+                        <input type="submit" value="Add Parking Space">
+                    </form>
+                </div>
+            </div>
+            <p><a href="{{ url_for('logout') }}">Logout</a></p>
+        </div>
+    </div>
+    <script>
+        function toggleForm() {
+            var form = document.getElementById("newParkingSpaceForm");
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
